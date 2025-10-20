@@ -4,7 +4,6 @@ A modern, responsive e-commerce web application built with Angular 18 and TypeSc
 
 [![Angular](https://img.shields.io/badge/Angular-v18-red.svg)](https://angular.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v5.9-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-ISC-yellow.svg)](LICENSE)
 
 ## ✨ Features
 
@@ -295,15 +294,7 @@ ng test --browsers=ChromeHeadless
 - Body: 400 weight
 - Small text: 300 weight
 
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-## � License
-
-This project is [ISC](LICENSE) licensed.
-
-## 👨‍� Author
+## 👨‍ Authors
 
 **Abdo Abdelfatah**
 
@@ -315,12 +306,6 @@ This project is [ISC](LICENSE) licensed.
 
 ## 🔗 Related
 
-- [Backend API Repository](https://github.com/AbdoAbdelfatah/nexbuy-backend) - Node.js REST API
+- [Backend API Repository](https://github.com/AbdoAbdelfatah/NexBuy_Backend) - Node.js REST API
 
 ---
-
-<div align="center">
-  
-Made with ❤️ using Angular 18
-
-</div>
