@@ -1,0 +1,36 @@
+<header class="main-header">
+  <div class="container">
+    <div class="header-content">
+      <a routerLink="/" class="logo">NexBuy</a>
+      
+      <nav class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          Products
+        </a>
+        
+        @if (authService.isAuthenticated()) {
+          <a routerLink="/my-products" routerLinkActive="active">My Products</a>
+          <a routerLink="/orders" routerLinkActive="active">Orders</a>
+        }
+      </nav>
+
+      <div class="actions">
+        @if (authService.isAuthenticated()) {
+          <a routerLink="/cart" class="cart-link">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            @if (cartService.cartCount > 0) {
+              <span class="cart-badge">{{ cartService.cartCount }}</span>
+            }
+          </a>
+          <span class="user-name">{{ authService.currentUser()?.name }}</span>
+          <button (click)="logout()" class="btn btn-logout">Logout</button>
+        } @else {
+          <a routerLink="/login" class="btn btn-secondary">Login</a>
+          <a routerLink="/register" class="btn btn-primary">Sign Up</a>
+        }
+      </div>
+    </div>
+  </div>
+</header>

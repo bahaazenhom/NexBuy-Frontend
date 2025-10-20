@@ -1,0 +1,63 @@
+<div class="my-products-container">
+  <div class="header-section">
+    <h1>My Products</h1>
+    <button class="btn btn-add" (click)="addNewProduct()">
+      + Add New Product
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading your products...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    @if (myProducts.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h2>No products yet</h2>
+        <p>Start selling by adding your first product!</p>
+        <button class="btn btn-primary" (click)="addNewProduct()">
+          Add Your First Product
+        </button>
+      </div>
+    } @else {
+      <div class="products-grid">
+        @for (product of myProducts; track product._id) {
+          <div class="product-card" (click)="viewProduct(product._id)">
+            <div class="product-image">
+              @if (product.images && product.images.length > 0) {
+                <img [src]="product.images[0].url" [alt]="product.title" />
+              } @else {
+                <div class="no-image">No Image</div>
+              }
+            </div>
+
+            <div class="product-info">
+              <h3>{{ product.title }}</h3>
+              <p class="product-description">{{ product.desc }}</p>
+
+              <div class="product-footer">
+                <div class="price">${{ product.price.toFixed(2) }}</div>
+                <div class="action-buttons">
+                  <button class="btn btn-edit" (click)="editProduct(product._id); $event.stopPropagation()">
+                    Edit
+                  </button>
+                  <button class="btn btn-delete" (click)="deleteProduct(product._id, $event)">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

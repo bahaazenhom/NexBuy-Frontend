@@ -1,0 +1,131 @@
+<div class="product-detail-container">
+  @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading product...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  @if (!loading && !error && product) {
+    <div class="product-detail">
+      <div class="product-gallery">
+        @if (product.images && product.images.length > 0) {
+          <img [src]="product.images[0].url" [alt]="product.title" class="main-image" />
+        } @else {
+          <div class="no-image">No Image Available</div>
+        }
+      </div>
+
+      <div class="product-info">
+        <h1>{{ product.title }}</h1>
+        <p class="description">{{ product.desc }}</p>
+
+        @if (product.specs && Object.keys(product.specs).length > 0) {
+          <div class="specifications">
+            <h3>Specifications:</h3>
+            <ul>
+              @for (key of Object.keys(product.specs); track key) {
+                <li>{{ key }}: {{ product.specs[key] }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="price-section">
+          <div class="price">${{ product.price.toFixed(2) }}</div>
+          
+          @if (isOwnProduct()) {
+            <div class="owner-actions">
+              <button class="btn btn-delete" (click)="deleteProduct()">
+                Delete Product
+              </button>
+              <button class="btn btn-edit" routerLink="/my-products">
+                Manage Products
+              </button>
+            </div>
+          } @else {
+            @if (getProductQuantityInCart() > 0) {
+              <div class="quantity-controls-large">
+                <button class="btn btn-quantity" (click)="decreaseQuantity()">
+                  −
+                </button>
+                <span class="quantity-display">{{ getProductQuantityInCart() }}</span>
+                <button class="btn btn-quantity" (click)="increaseQuantity()">
+                  +
+                </button>
+              </div>
+            } @else {
+              <button class="btn btn-add-cart" (click)="addToCart()" [disabled]="!isLoggedIn()">
+                {{ isLoggedIn() ? 'Add to Cart' : 'Login to Buy' }}
+              </button>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="comments-section">
+      <h2>Customer Reviews</h2>
+
+      @if (isLoggedIn()) {
+        <div class="add-comment">
+          <h3>Write a Review</h3>
+          <form (ngSubmit)="submitComment()" #commentForm="ngForm">
+            <div class="form-group">
+              <label>Rating:</label>
+              <select [(ngModel)]="newComment.rating" name="rating">
+                <option [value]="5">5 Stars - Excellent</option>
+                <option [value]="4">4 Stars - Good</option>
+                <option [value]="3">3 Stars - Average</option>
+                <option [value]="2">2 Stars - Poor</option>
+                <option [value]="1">1 Star - Terrible</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Your Review:</label>
+              <textarea 
+                [(ngModel)]="newComment.text" 
+                name="text" 
+                rows="4" 
+                placeholder="Share your experience with this product..."
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-submit" [disabled]="!newComment.text.trim()">
+              Submit Review
+            </button>
+          </form>
+        </div>
+      }
+
+      <div class="comments-list">
+        @for (comment of comments; track comment._id) {
+          <div class="comment-card">
+            <div class="comment-header">
+              @if (typeof comment.userId !== 'string') {
+                <div class="author">{{ comment.userId.name }}</div>
+              } @else {
+                <div class="author">User</div>
+              }
+              <div class="rating">
+                @for (star of getStars(comment.rate); track $index) {
+                  <span class="star" [class.filled]="star === '★'">{{ star }}</span>
+                }
+              </div>
+            </div>
+            <p class="comment-text">{{ comment.content }}</p>
+            <div class="comment-date">{{ comment.createdAt | date:'short' }}</div>
+          </div>
+        }
+
+        @if (comments.length === 0) {
+          <p class="no-comments">No reviews yet. Be the first to review this product!</p>
+        }
+      </div>
+    </div>
+  }
+</div>

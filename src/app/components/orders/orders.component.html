@@ -1,0 +1,71 @@
+<div class="orders-container">
+  <h1>My Orders</h1>
+
+  @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading your orders...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    @if (orders.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h2>No orders yet</h2>
+        <p>When you place orders, they will appear here.</p>
+      </div>
+    } @else {
+      <div class="orders-list">
+        @for (order of orders; track order._id) {
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Order #{{ order._id.slice(-8) }}</div>
+              <div class="order-status" [ngClass]="getStatusClass(order.status)">
+                {{ order.status.toUpperCase() }}
+              </div>
+            </div>
+
+            <div class="order-date">
+              Placed on: {{ order.createdAt | date:'medium' }}
+            </div>
+
+            <div class="order-items">
+              @for (item of order.items; track $index) {
+                <div class="order-item">
+                  @if (item.product && typeof item.product !== 'string') {
+                    <div class="item-name">{{ item.product.title }}</div>
+                  } @else {
+                    <div class="item-name">Product ID: {{ item.product }}</div>
+                  }
+                  <div class="item-details">
+                    <span>Qty: {{ item.quantity }}</span>
+                    <span>${{ item.priceAtPurchase.toFixed(2) }} each</span>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="order-shipping">
+              <strong>Shipping Address:</strong>
+              <p>
+                {{ order.shippingAddress.fullname }}<br />
+                {{ order.shippingAddress.line }}<br />
+                {{ order.shippingAddress.city }}, {{ order.shippingAddress.country }}
+              </p>
+            </div>
+
+            <div class="order-total">
+              <strong>Total:</strong>
+              <span class="total-amount">${{ order.totalPrice.toFixed(2) }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

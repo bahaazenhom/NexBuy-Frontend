@@ -1,0 +1,142 @@
+<div class="edit-product-container">
+  <h1>Edit Product</h1>
+
+  @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading product...</p>
+    </div>
+  } @else {
+    <div class="product-form">
+      @if (error) {
+        <div class="error-message">{{ error }}</div>
+      }
+
+      <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+        <div class="form-group">
+          <label for="title">Product Title *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            [(ngModel)]="product.title"
+            required
+            placeholder="Enter product title"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="desc">Description *</label>
+          <textarea
+            id="desc"
+            name="desc"
+            [(ngModel)]="product.desc"
+            required
+            rows="4"
+            placeholder="Enter product description"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="price">Price * ($)</label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            [(ngModel)]="product.price"
+            required
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div class="form-section">
+          <h3>Product Images</h3>
+          <div class="image-input-group">
+            <div class="form-row">
+              <input
+                type="url"
+                [(ngModel)]="imageUrl"
+                name="imageUrl"
+                placeholder="Image URL"
+                class="flex-input"
+              />
+              <input
+                type="text"
+                [(ngModel)]="imageAlt"
+                name="imageAlt"
+                placeholder="Image description"
+                class="flex-input"
+              />
+              <button type="button" class="btn btn-add-item" (click)="addImage()">
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div class="added-items">
+            @for (image of product.images; track $index) {
+              <div class="item-chip">
+                <img [src]="image.url" [alt]="image.alt" class="thumb" />
+                <span>{{ image.alt }}</span>
+                <button type="button" class="btn-remove-item" (click)="removeImage($index)">
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Specifications</h3>
+          <div class="spec-input-group">
+            <div class="form-row">
+              <input
+                type="text"
+                [(ngModel)]="specKey"
+                name="specKey"
+                placeholder="Specification name (e.g., Brand)"
+                class="flex-input"
+              />
+              <input
+                type="text"
+                [(ngModel)]="specValue"
+                name="specValue"
+                placeholder="Value"
+                class="flex-input"
+              />
+              <button type="button" class="btn btn-add-item" (click)="addSpec()">
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div class="added-items">
+            @for (key of getSpecKeys(); track key) {
+              <div class="item-chip">
+                <strong>{{ key }}:</strong> {{ product.specs[key] }}
+                <button type="button" class="btn-remove-item" (click)="removeSpec(key)">
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-submit"
+            [disabled]="saving || !productForm.form.valid"
+          >
+            {{ saving ? 'Updating...' : 'Update Product' }}
+          </button>
+          <button type="button" class="btn btn-cancel" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>
