@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +37,19 @@ export class ProductDetailComponent implements OnInit {
   currentUserId = this.authService.currentUser()?._id;
   currentUser = this.authService.currentUser;
 
+  productQuantityInCart = computed(() => {
+    if (!this.product) return 0;
+    const user = this.currentUser();
+    if (!user || !user.cart) return 0;
+    
+    const cartItem = user.cart.find(item => {
+      const itemProductId = typeof item.product === 'string' ? item.product : item.product._id;
+      return itemProductId === this.product?._id;
+    });
+    
+    return cartItem ? cartItem.quantity : 0;
+  });
+
   Object = Object;  // Make Object available in template
 
   ngOnInit() {
@@ -48,16 +61,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getProductQuantityInCart(): number {
-    if (!this.product) return 0;
-    const user = this.currentUser();
-    if (!user || !user.cart) return 0;
-    
-    const cartItem = user.cart.find(item => {
-      const itemProductId = typeof item.product === 'string' ? item.product : item.product._id;
-      return itemProductId === this.product?._id;
-    });
-    
-    return cartItem ? cartItem.quantity : 0;
+    return this.productQuantityInCart();
   }
 
   isOwnProduct(): boolean {
