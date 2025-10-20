@@ -82,6 +82,7 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProduct(productId).subscribe({
       next: (product: Product) => {
         this.product = product;
+        this.currentImageIndex = 0; // Reset image index when loading new product
         this.loading = false;
       },
       error: (err: any) => {
