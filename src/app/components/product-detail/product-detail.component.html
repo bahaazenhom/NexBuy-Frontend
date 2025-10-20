@@ -14,7 +14,41 @@
     <div class="product-detail">
       <div class="product-gallery">
         @if (product.images && product.images.length > 0) {
-          <img [src]="product.images[0].url" [alt]="product.title" class="main-image" />
+          <div class="image-slider">
+            <img [src]="getCurrentImage()" [alt]="product.title" class="main-image" />
+            
+            @if (product.images.length > 1) {
+              <button class="slider-btn prev-btn" (click)="previousImage()">
+                ‹
+              </button>
+              <button class="slider-btn next-btn" (click)="nextImage()">
+                ›
+              </button>
+              
+              <div class="image-indicators">
+                @for (img of product.images; track $index) {
+                  <button 
+                    class="indicator-dot" 
+                    [class.active]="currentImageIndex === $index"
+                    (click)="selectImage($index)">
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          
+          @if (product.images.length > 1) {
+            <div class="thumbnail-gallery">
+              @for (img of product.images; track $index) {
+                <img 
+                  [src]="img.url" 
+                  [alt]="product.title + ' - ' + ($index + 1)"
+                  class="thumbnail" 
+                  [class.active]="currentImageIndex === $index"
+                  (click)="selectImage($index)" />
+              }
+            </div>
+          }
         } @else {
           <div class="no-image">No Image Available</div>
         }

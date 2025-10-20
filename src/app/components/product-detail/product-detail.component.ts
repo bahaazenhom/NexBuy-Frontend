@@ -27,6 +27,7 @@ export class ProductDetailComponent implements OnInit {
   comments: Comment[] = [];
   loading = true;
   error = '';
+  currentImageIndex = 0;
 
   newComment = {
     rating: 5,
@@ -186,5 +187,26 @@ export class ProductDetailComponent implements OnInit {
 
   getStars(rating: number): string[] {
     return Array(5).fill('★').map((star, i) => i < rating ? '★' : '☆');
+  }
+
+  nextImage() {
+    if (!this.product || !this.product.images) return;
+    this.currentImageIndex = (this.currentImageIndex + 1) % this.product.images.length;
+  }
+
+  previousImage() {
+    if (!this.product || !this.product.images) return;
+    this.currentImageIndex = (this.currentImageIndex - 1 + this.product.images.length) % this.product.images.length;
+  }
+
+  selectImage(index: number) {
+    this.currentImageIndex = index;
+  }
+
+  getCurrentImage(): string {
+    if (!this.product || !this.product.images || this.product.images.length === 0) {
+      return '';
+    }
+    return this.product.images[this.currentImageIndex]?.url || '';
   }
 }
