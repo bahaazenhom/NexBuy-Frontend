@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, effect } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
@@ -26,17 +26,20 @@ export class ProductListComponent implements OnInit {
   isLoggedIn = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
 
-  Object = Object;  // Make Object available in template
-
-  constructor() {
-    // Reload products when user changes
-    effect(() => {
-      this.currentUser(); // Track the signal
-      if (!this.loading) {
-        this.loadProducts();
-      }
+  // Computed signal for cart - updates automatically when user cart changes
+  cartMap = computed(() => {
+    const user = this.currentUser();
+    if (!user || !user.cart) return new Map<string, number>();
+    
+    const map = new Map<string, number>();
+    user.cart.forEach(item => {
+      const productId = typeof item.product === 'string' ? item.product : item.product._id;
+      map.set(productId, item.quantity);
     });
-  }
+    return map;
+  });
+
+  Object = Object;  // Make Object available in template
 
   ngOnInit() {
     this.loadProducts();
@@ -68,15 +71,7 @@ export class ProductListComponent implements OnInit {
   }
 
   getProductQuantityInCart(productId: string): number {
-    const user = this.currentUser();
-    if (!user || !user.cart) return 0;
-    
-    const cartItem = user.cart.find(item => {
-      const itemProductId = typeof item.product === 'string' ? item.product : item.product._id;
-      return itemProductId === productId;
-    });
-    
-    return cartItem ? cartItem.quantity : 0;
+    return this.cartMap().get(productId) || 0;
   }
 
   addToCart(productId: string) {
